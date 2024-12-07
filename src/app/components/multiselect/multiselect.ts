@@ -199,10 +199,20 @@ export class MultiSelectItem {
                                         [ngClass]="{ 'p-disabled': isOptionDisabled(item) }"
                                         [styleClass]="'p-multiselect-token-icon'"
                                         (click)="removeOption(item, event)"
+                                        (keydown)="onremoveTokenIconKeyDown($event, item)"
+                                        [attr.tabindex]="0"
                                         [attr.data-pc-section]="'clearicon'"
                                         [attr.aria-hidden]="true"
                                     />
-                                    <span *ngIf="removeTokenIconTemplate" class="p-multiselect-token-icon" (click)="removeOption(item, event)" [attr.data-pc-section]="'clearicon'" [attr.aria-hidden]="true">
+                                    <span
+                                        *ngIf="removeTokenIconTemplate"
+                                        class="p-multiselect-token-icon"
+                                        (click)="removeOption(item, event)"
+                                        (keydown)="onremoveTokenIconKeyDown($event, item)"
+                                        [attr.tabindex]="0"
+                                        [attr.data-pc-section]="'clearicon'"
+                                        [attr.aria-hidden]="true"
+                                    >
                                         <ng-container *ngTemplateOutlet="removeTokenIconTemplate"></ng-container>
                                     </span>
                                 </ng-container>
@@ -1916,6 +1926,26 @@ export class MultiSelect implements OnInit, AfterViewInit, AfterContentInit, Aft
         }
     }
 
+    onremoveTokenIconKeyDown(event, item) {
+        if (this.disabled) {
+            event.preventDefault();
+
+            return;
+        }
+
+        switch (event.code) {
+            case 'Space':
+            case 'Enter':
+            case 'NumpadEnter':
+                this.removeOption(item, event);
+                break;
+            default:
+                break;
+        }
+        event.preventDefault();
+        event.stopPropagation();
+    }
+
     onFilterBlur(event) {
         this.focusedOptionIndex.set(-1);
     }
@@ -2149,6 +2179,7 @@ export class MultiSelect implements OnInit, AfterViewInit, AfterContentInit, Aft
             value: value,
             itemValue: optionValue
         });
+        this.onClear.emit();
 
         event && event.stopPropagation();
     }

@@ -834,6 +834,11 @@ export class Scroller implements OnInit, AfterContentInit, AfterViewChecked, OnD
                     this.contentEl.style.minHeight = this.contentEl.style.minWidth = '';
                     this.contentEl.style.position = '';
                     (<ElementRef>this.elementViewChild).nativeElement.style.contain = '';
+
+                    this.defaultWidth = width;
+                    this.defaultHeight = height;
+                    this.defaultContentWidth = contentWidth;
+                    this.defaultContentHeight = contentHeight;
                 }
             });
         }
@@ -882,7 +887,7 @@ export class Scroller implements OnInit, AfterContentInit, AfterViewChecked, OnD
                 setProp('height', numItems, this._itemSize[0]);
                 setProp('width', this._columns?.length || this._items[1]?.length, this._itemSize[1]);
             } else {
-                this.horizontal ? setProp('width', this._columns.length || this._items.length, this._itemSize) : setProp('height', numItems, this._itemSize);
+                this.horizontal ? setProp('width', this._columns?.length || this._items.length, this._itemSize) : setProp('height', numItems, this._itemSize);
             }
         }
     }
@@ -1059,12 +1064,6 @@ export class Scroller implements OnInit, AfterContentInit, AfterViewChecked, OnD
                 reinit &&
                     this.zone.run(() => {
                         this.d_numToleratedItems = this._numToleratedItems;
-                        this.defaultWidth = width;
-                        this.defaultHeight = height;
-                        if (this.contentEl) {
-                            this.defaultContentWidth = DomHandler.getWidth(this.contentEl);
-                            this.defaultContentHeight = DomHandler.getHeight(this.contentEl);
-                        }
 
                         this.init();
                         this.calculateAutoSize();
